@@ -1,8 +1,10 @@
 package com.cognifide.homework.controller;
 
 import com.cognifide.homework.model.Book;
+import com.cognifide.homework.model.Rating;
 import com.cognifide.homework.util.JsonParser;
 import com.cognifide.homework.exceptions.ResourceNotFoundException;
+import com.cognifide.homework.util.RatingComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class ApiController {
@@ -43,5 +43,22 @@ public class ApiController {
         }
         return books;
     }
+
+    @GetMapping("/api/rating")
+    public SortedSet<Rating> getAuthorsByRating(){
+        TreeSet<Rating> ratings = new TreeSet<>(new RatingComparator());
+        for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()){
+            if (entry.getValue().getAverageRating() != null){
+                for (int i = 0; i<entry.getValue().getAuthors().length; i++){
+                  Rating rating = new Rating();
+                  rating.setAuthor(entry.getValue().getAuthors()[i]);
+                  rating.setAverageRating(entry.getValue().getAverageRating());
+                  ratings.add(rating);
+                }
+            }
+        }
+        return ratings;
+    }
+
 
 }
