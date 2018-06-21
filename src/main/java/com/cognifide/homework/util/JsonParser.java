@@ -1,10 +1,10 @@
 package com.cognifide.homework.util;
 
 import com.cognifide.homework.model.Book;
+import com.cognifide.homework.model.IndustryIdentifier;
 import com.cognifide.homework.model.Item;
 import com.cognifide.homework.model.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -32,23 +32,23 @@ public class JsonParser {
     public void parseJson() throws IOException, ParseException {
         ObjectMapper mapper = new ObjectMapper();
 
-        Gson gson = new Gson();
         SimpleDateFormat dateFormatDate = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat dateFormatYear = new SimpleDateFormat("yyyy");
         dateFormats.add(dateFormatDate);
         dateFormats.add(dateFormatYear);
 
-        Response response = gson.fromJson(new FileReader(path), Response.class);
+        Response response = mapper.readValue(new FileReader(path), Response.class);
+
         Item[] items = response.getItems();
 
-        for (int i = 0; i<items.length; i++) {
+        for (Item item : items){
             Book book;
             String isbn = null;
 
-            for (int j = 0; j<items[i].getVolumeInfo().getIndustryIdentifiers().length; j++) {
-                if (items[i].getVolumeInfo().getIndustryIdentifiers()[j].getType().equals("ISBN_13")) {
-                    isbn = items[i].getVolumeInfo().getIndustryIdentifiers()[j].getIdentifier();
-                    book = new Book(items[i], isbn);
+            for (IndustryIdentifier industryIdentifier : item.getVolumeInfo().getIndustryIdentifiers()){
+                if (industryIdentifier.getType().equals("ISBN_13")) {
+                    isbn = industryIdentifier.getIdentifier();
+                    book = new Book(item, isbn);
                     booksMap.put(isbn, book);
                     continue;
                 }

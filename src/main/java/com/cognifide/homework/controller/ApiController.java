@@ -21,10 +21,11 @@ public class ApiController {
     @Autowired
     JsonParser jsonParser;
 
-    @GetMapping(value = "/api/book/{isbn}")
+    @GetMapping("/api/book/{isbn}")
     public Book findByIsbn(@PathVariable("isbn") String isbn, HttpServletResponse response) throws IOException, ParseException {
-        if (jsonParser.getBooksMap().containsKey(isbn))
+        if (jsonParser.getBooksMap().containsKey(isbn)) {
             return jsonParser.getBooksMap().get(isbn);
+        }
         else {
             response.sendRedirect("/api/book/nonexisting");
             return null;
@@ -32,18 +33,18 @@ public class ApiController {
 
     }
 
-    @GetMapping(value = "/api/book/nonexisting")
+    @GetMapping("/api/book/nonexisting")
     public void nonExisting(){
         throw new ResourceNotFoundException("No results found");
     }
     
-    @GetMapping(value = "/api/category/{category}/books")
+    @GetMapping("/api/category/{category}/books")
     public List<Book> findByCategory(@PathVariable("category") String category){
         List<Book> books = new LinkedList<>();
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()) {
             if (entry.getValue().getCategories() != null) {
-                for (int i = 0; i < entry.getValue().getCategories().length; i++) {
-                    if (entry.getValue().getCategories()[i].equals(category))
+                for (String cat : entry.getValue().getCategories()){
+                    if (cat.equals(category))
                         books.add(entry.getValue());
                 }
             }
@@ -56,9 +57,9 @@ public class ApiController {
         TreeSet<Rating> ratings = new TreeSet<>(new RatingComparator());
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()){
             if (entry.getValue().getAverageRating() != null){
-                for (int i = 0; i<entry.getValue().getAuthors().length; i++){
+                for (String author : entry.getValue().getAuthors()){
                   Rating rating = new Rating();
-                  rating.setAuthor(entry.getValue().getAuthors()[i]);
+                  rating.setAuthor(author);
                   rating.setAverageRating(entry.getValue().getAverageRating());
                   ratings.add(rating);
                 }
