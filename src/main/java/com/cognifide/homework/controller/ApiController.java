@@ -21,7 +21,7 @@ public class ApiController {
     @Autowired
     JsonParser jsonParser;
 
-    @GetMapping("/api/book/{isbn}")
+    @GetMapping(value = "/api/book/{isbn}")
     public Book findByIsbn(@PathVariable("isbn") String isbn, HttpServletResponse response) throws IOException, ParseException {
         if (jsonParser.getBooksMap().containsKey(isbn))
             return jsonParser.getBooksMap().get(isbn);
@@ -32,12 +32,12 @@ public class ApiController {
 
     }
 
-    @GetMapping("/api/book/nonexisting")
+    @GetMapping(value = "/api/book/nonexisting")
     public void nonExisting(){
         throw new ResourceNotFoundException("No results found");
     }
     
-    @GetMapping("/api/category/{category}/books")
+    @GetMapping(value = "/api/category/{category}/books")
     public List<Book> findByCategory(@PathVariable("category") String category){
         List<Book> books = new LinkedList<>();
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()) {
@@ -51,7 +51,7 @@ public class ApiController {
         return books;
     }
 
-    @GetMapping("/api/rating")
+    @GetMapping(value = "/api/rating")
     public TreeSet<Rating> getAuthorsByRating(){
         TreeSet<Rating> ratings = new TreeSet<>(new RatingComparator());
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()){
