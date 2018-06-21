@@ -1,9 +1,6 @@
 package com.cognifide.homework.model;
 
-import com.google.gson.annotations.SerializedName;
 import lombok.Data;
-
-import java.util.List;
 
 public @Data
 class  VolumeInfo{

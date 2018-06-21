@@ -1,16 +1,12 @@
 package com.cognifide.homework.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 
 public @Data
@@ -30,7 +26,7 @@ class Book {
     private String[] authors;
     private String[] categories;
 
-    public void setValues(Item item, String isbn) throws ParseException {
+    public Book(Item item, String isbn){
         this.isbn = isbn;
         this.title = item.getVolumeInfo().getTitle();
         this.subtitle = item.getVolumeInfo().getSubtitle();
