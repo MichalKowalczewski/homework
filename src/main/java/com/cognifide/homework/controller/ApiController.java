@@ -40,6 +40,7 @@ public class ApiController {
     
     @GetMapping("/api/category/{category}/books")
     public List<Book> findByCategory(@PathVariable("category") String category){
+        //Using LinkedList as we just need to iterate through data, but we don't know the size of it
         List<Book> books = new LinkedList<>();
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()) {
             if (entry.getValue().getCategories() != null) {
@@ -54,6 +55,7 @@ public class ApiController {
 
     @GetMapping(value = "/api/rating")
     public TreeSet<Rating> getAuthorsByRating(){
+        //Using TreeSet to simplify the sorting
         TreeSet<Rating> ratings = new TreeSet<>(new RatingComparator());
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()){
             if (entry.getValue().getAverageRating() != null){

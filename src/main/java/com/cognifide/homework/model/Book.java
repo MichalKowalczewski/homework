@@ -8,10 +8,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-
+//Using Lombok to simplify the code, and save some time
 public @Data
 class Book {
-
+    // on numerics using objects not primitives
+    // so they can be nulls and jackson can ignore them by default-property-inclusion=NON_NULL
     private String isbn;
     private String title;
     private String subtitle;
@@ -50,11 +51,8 @@ class Book {
     }
 
     public long parseStringToTimestamp(String dateString){
-        List<SimpleDateFormat> dateFormats = new LinkedList<>();
-        SimpleDateFormat dateFormatDate = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat dateFormatYear = new SimpleDateFormat("yyyy");
-        dateFormats.add(dateFormatDate);
-        dateFormats.add(dateFormatYear);
+        //No need to use any type of List here cause we know all the formats from the very beginning
+        SimpleDateFormat[] dateFormats = new SimpleDateFormat[]{new SimpleDateFormat("yyyy"), new SimpleDateFormat("yyyy-MM-dd")};
         long timestamp = 0;
         for (SimpleDateFormat df: dateFormats) {
             try {

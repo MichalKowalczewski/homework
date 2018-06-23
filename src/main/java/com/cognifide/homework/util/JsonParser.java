@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
@@ -20,22 +19,18 @@ import java.util.*;
 public class JsonParser {
     @Value("${parser.path}")
     private String path;
-
-    List<SimpleDateFormat> dateFormats = new LinkedList<>();
     private Map<String,Book> booksMap = new HashMap<>();
-
     public Map<String, Book> getBooksMap() {
         return booksMap;
     }
 
     @PostConstruct
     public void parseJson() throws IOException, ParseException {
+        //Chose Jackson over Gson because Jackson is provided "from the box" with Spring framework.
+        //Also I'm using @RestController annotation (which using Jackson) in the ApiController to serialize the Objects to json and
+        //although Gson seems to be a bit simpler with deserialization there is point to use different libraries for
+        //serialization and deserialization
         ObjectMapper mapper = new ObjectMapper();
-
-        SimpleDateFormat dateFormatDate = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat dateFormatYear = new SimpleDateFormat("yyyy");
-        dateFormats.add(dateFormatDate);
-        dateFormats.add(dateFormatYear);
 
         Response response = mapper.readValue(new FileReader(path), Response.class);
 
@@ -55,21 +50,4 @@ public class JsonParser {
             }
         }
     }
-
-    public long parseStringToTimestamp(String dateString){
-        long timestamp = 0;
-        for (SimpleDateFormat df: dateFormats) {
-            try {
-                Date date = df.parse(dateString);
-                timestamp = date.getTime();
-                break;
-            }
-            catch (ParseException pe){
-                pe.getMessage();
-            }
-        }
-        return timestamp;
-    }
-
-
 }
