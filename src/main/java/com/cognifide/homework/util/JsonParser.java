@@ -1,5 +1,6 @@
 package com.cognifide.homework.util;
 
+import com.cognifide.homework.exceptions.ResourceNotFoundException;
 import com.cognifide.homework.model.Book;
 import com.cognifide.homework.model.IndustryIdentifier;
 import com.cognifide.homework.model.Item;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.*;
 
@@ -19,10 +21,18 @@ import java.util.*;
 public class JsonParser {
     @Value("${parser.path}")
     private String path;
+    @Value("${parser.source}")
+    private String source;
+    @Value("${parser.url}")
+    private String url;
+
     private Map<String,Book> booksMap = new HashMap<>();
     public Map<String, Book> getBooksMap() {
         return booksMap;
     }
+
+
+
 
     @PostConstruct
     public void parseJson() throws IOException, ParseException {
@@ -31,8 +41,14 @@ public class JsonParser {
         //although Gson seems to be a bit simpler with deserialization there is point to use different libraries for
         //serialization and deserialization
         ObjectMapper mapper = new ObjectMapper();
-
-        Response response = mapper.readValue(new FileReader(path), Response.class);
+        Response response = null;
+        if (source.toLowerCase().equals("file")){
+            response = mapper.readValue(new FileReader(path), Response.class);
+        }
+        else if (source.toLowerCase().equals("url")){
+            response = mapper.readValue(new URL(url), Response.class);
+        }
+        else throw new IOException("wrong source");
 
         Item[] items = response.getItems();
 

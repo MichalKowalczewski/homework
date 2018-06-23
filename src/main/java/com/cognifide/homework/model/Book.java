@@ -38,7 +38,9 @@ class Book {
         }
         this.description = item.getVolumeInfo().getDescription();
         this.pageCount = item.getVolumeInfo().getPageCount();
-        this.thumbnailUlr = item.getVolumeInfo().getImageLinks().getThumbnail();
+        if (item.getVolumeInfo().getImageLinks() != null) {
+            this.thumbnailUlr = item.getVolumeInfo().getImageLinks().getThumbnail();
+        }
         this.language = item.getVolumeInfo().getLanguage();
         this.previewLink = item.getVolumeInfo().getPreviewLink();
         this.averageRating = item.getVolumeInfo().getAverageRating();
