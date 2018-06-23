@@ -58,9 +58,7 @@ public class ApiController {
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()){
             if (entry.getValue().getAverageRating() != null){
                 for (String author : entry.getValue().getAuthors()){
-                  Rating rating = new Rating();
-                  rating.setAuthor(author);
-                  rating.setAverageRating(entry.getValue().getAverageRating());
+                  Rating rating = new Rating(author, entry.getValue().getAverageRating());
                   ratings.add(rating);
                 }
             }
