@@ -42,13 +42,18 @@ public class JsonParser {
         //serialization and deserialization
         ObjectMapper mapper = new ObjectMapper();
         Response response = null;
-        if (source.toLowerCase().equals("file")){
-            response = mapper.readValue(new FileReader(path), Response.class);
+        switch (source.toLowerCase()){
+            case "file": {
+                response = mapper.readValue(new FileReader(path), Response.class);
+                break;
+            }
+            case "url": {
+                response = mapper.readValue(new URL(url), Response.class);
+                break;
+            }
+            default:
+                throw new IOException("wrong source");
         }
-        else if (source.toLowerCase().equals("url")){
-            response = mapper.readValue(new URL(url), Response.class);
-        }
-        else throw new IOException("wrong source");
 
         Item[] items = response.getItems();
 
