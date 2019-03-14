@@ -1,10 +1,10 @@
-package com.cognifide.homework.controller;
+package com.homework.controller;
 
-import com.cognifide.homework.model.Book;
-import com.cognifide.homework.model.Rating;
-import com.cognifide.homework.util.JsonParser;
-import com.cognifide.homework.exceptions.ResourceNotFoundException;
-import com.cognifide.homework.util.RatingComparator;
+import com.homework.model.Book;
+import com.homework.model.Rating;
+import com.homework.util.JsonParser;
+import com.homework.exceptions.ResourceNotFoundException;
+import com.homework.util.RatingComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

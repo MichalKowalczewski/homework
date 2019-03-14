@@ -1,4 +1,4 @@
-package com.cognifide.homework.model;
+package com.homework.model;
 
 import lombok.Data;
 

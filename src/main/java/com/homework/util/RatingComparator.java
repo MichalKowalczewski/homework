@@ -1,6 +1,6 @@
-package com.cognifide.homework.util;
+package com.homework.util;
 
-import com.cognifide.homework.model.Rating;
+import com.homework.model.Rating;
 
 import java.util.Comparator;
 

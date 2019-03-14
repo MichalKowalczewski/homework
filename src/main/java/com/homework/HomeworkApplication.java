@@ -1,4 +1,4 @@
-package com.cognifide.homework;
+package com.homework;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

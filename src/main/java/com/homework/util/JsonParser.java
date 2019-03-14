@@ -1,10 +1,9 @@
-package com.cognifide.homework.util;
+package com.homework.util;
 
-import com.cognifide.homework.exceptions.ResourceNotFoundException;
-import com.cognifide.homework.model.Book;
-import com.cognifide.homework.model.IndustryIdentifier;
-import com.cognifide.homework.model.Item;
-import com.cognifide.homework.model.Response;
+import com.homework.model.Book;
+import com.homework.model.IndustryIdentifier;
+import com.homework.model.Item;
+import com.homework.model.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

@@ -1,4 +1,4 @@
-package com.cognifide.homework.model;
+package com.homework.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

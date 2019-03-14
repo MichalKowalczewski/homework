@@ -1,12 +1,10 @@
-package com.cognifide.homework.model;
+package com.homework.model;
 
 import lombok.Data;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 //Using Lombok to simplify the code, and save some time
 public @Data

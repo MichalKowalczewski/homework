@@ -1,4 +1,4 @@
-package com.cognifide.homework;
+package com.homework;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
