@@ -6,11 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-//Using Lombok to simplify the code, and save some time
 public @Data
 class Book {
-    // on numerics using objects not primitives
-    // so they can be nulls and jackson can ignore them by default-property-inclusion=NON_NULL
     private String isbn;
     private String title;
     private String subtitle;
@@ -51,7 +48,6 @@ class Book {
     }
 
     public long parseStringToTimestamp(String dateString){
-        //No need to use any type of List here cause we know all the formats from the very beginning
         SimpleDateFormat[] dateFormats = new SimpleDateFormat[]{new SimpleDateFormat("yyyy"), new SimpleDateFormat("yyyy-MM-dd")};
         long timestamp = 0;
         for (SimpleDateFormat df: dateFormats) {

@@ -35,10 +35,6 @@ public class JsonParser {
 
     @PostConstruct
     public void parseJson() throws IOException, ParseException {
-        //Chose Jackson over Gson because Jackson is provided "from the box" with Spring framework.
-        //Also I'm using @RestController annotation (which using Jackson) in the ApiController to serialize the Objects to json and
-        //although Gson seems to be a bit simpler with deserialization there is no point to use different libraries for
-        //serialization and deserialization
         ObjectMapper mapper = new ObjectMapper();
         Response response = null;
         switch (source.toLowerCase()){

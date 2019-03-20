@@ -5,9 +5,12 @@ import com.homework.model.Rating;
 import com.homework.util.JsonParser;
 import com.homework.exceptions.ResourceNotFoundException;
 import com.homework.util.RatingComparator;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,13 +19,17 @@ import java.text.ParseException;
 import java.util.*;
 
 @RestController
+@Api(value = "BooksControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ApiController {
 
     @Autowired
     JsonParser jsonParser;
 
     @GetMapping("/api/book/{isbn}")
-    public Book findByIsbn(@PathVariable("isbn") String isbn, HttpServletResponse response) throws IOException, ParseException {
+    @ApiOperation("Gets the books by ISBN")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Book.class)})
+    public Book findByIsbn(
+            @PathVariable("isbn") String isbn, HttpServletResponse response) throws IOException, ParseException {
         if (jsonParser.getBooksMap().containsKey(isbn)) {
             return jsonParser.getBooksMap().get(isbn);
         }
@@ -39,8 +46,7 @@ public class ApiController {
     }
     
     @GetMapping("/api/category/{category}/books")
-    public List<Book> findByCategory(@PathVariable("category") String category){
-        //Using LinkedList as we just need to iterate through data, but we don't know the size of it
+    public List<Book> findByCategory(@PathVariable("category") @ApiParam(value = "Category of the books you want to be provided") String category){
         List<Book> books = new LinkedList<>();
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()) {
             if (entry.getValue().getCategories() != null) {
@@ -55,7 +61,6 @@ public class ApiController {
 
     @GetMapping(value = "/api/rating")
     public TreeSet<Rating> getAuthorsByRating(){
-        //Using TreeSet to simplify the sorting
         TreeSet<Rating> ratings = new TreeSet<>(new RatingComparator());
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()){
             if (entry.getValue().getAverageRating() != null){
