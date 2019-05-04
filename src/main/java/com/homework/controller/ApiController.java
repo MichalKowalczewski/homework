@@ -1,6 +1,7 @@
 package com.homework.controller;
 
 import com.homework.model.Book;
+import com.homework.model.BookOrder;
 import com.homework.model.Rating;
 import com.homework.util.JsonParser;
 import com.homework.exceptions.ResourceNotFoundException;
@@ -38,7 +39,13 @@ public class ApiController {
             book.removeLinks();
             Link selfLink = linkTo(methodOn(ApiController.class)
                     .findByIsbn(book.getIsbn(), null)).withSelfRel();
+            Link categoryLink = linkTo(methodOn(ApiController.class)
+                    .findByCategory(book.getCategories()[0])).withRel("Category Link");
+            Link orderLink = linkTo(methodOn(ApiController.class)
+                    .orderByIsbn(book.getIsbn(), null)).withRel("Order Link");
             book.add(selfLink);
+            book.add(categoryLink);
+            book.add(orderLink);
             return book ;
         }
         else {
@@ -90,5 +97,28 @@ public class ApiController {
         return ratings;
     }
 
+    @GetMapping("/api/book/order/{isbn}")
+    @ApiOperation("Order book by ISBN")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = BookOrder.class)})
+    public BookOrder orderByIsbn(
+            @PathVariable("isbn") String isbn, HttpServletResponse response) throws IOException, ParseException {
 
+        if (jsonParser.getBooksMap().containsKey(isbn)) {
+            Book book = jsonParser.getBooksMap().get(isbn);
+            BookOrder order = new BookOrder(book);
+            order.removeLinks();
+            book.removeLinks();
+            Link selfLink = linkTo(methodOn(ApiController.class)
+                    .orderByIsbn(book.getIsbn(), null)).withSelfRel();
+            order.add(selfLink);
+            Link isbnLink = linkTo(methodOn(ApiController.class)
+                    .findByIsbn(book.getIsbn(), null)).withRel("ISBN URL");
+            order.getBookOrdered().add(isbnLink);
+            return order;
+        } else {
+            response.sendRedirect("/api/book/nonexisting");
+            return null;
+        }
+
+    }
 }
