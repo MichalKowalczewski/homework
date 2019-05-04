@@ -7,16 +7,19 @@ import com.homework.exceptions.ResourceNotFoundException;
 import com.homework.util.RatingComparator;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 @Api(value = "BooksControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,7 +34,12 @@ public class ApiController {
     public Book findByIsbn(
             @PathVariable("isbn") String isbn, HttpServletResponse response) throws IOException, ParseException {
         if (jsonParser.getBooksMap().containsKey(isbn)) {
-            return jsonParser.getBooksMap().get(isbn);
+            Book book = jsonParser.getBooksMap().get(isbn);
+            book.removeLinks();
+            Link selfLink = linkTo(methodOn(ApiController.class)
+                    .findByIsbn(book.getIsbn(), null)).withSelfRel();
+            book.add(selfLink);
+            return book ;
         }
         else {
             response.sendRedirect("/api/book/nonexisting");
@@ -46,13 +54,22 @@ public class ApiController {
     }
     
     @GetMapping("/api/category/{category}/books")
-    public List<Book> findByCategory(@PathVariable("category") @ApiParam(value = "Category of the books you want to be provided") String category){
+    public List<Book> findByCategory(@PathVariable("category") @ApiParam(value = "Category of the books you want to be provided") String category) throws IOException, ParseException {
         List<Book> books = new LinkedList<>();
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()) {
             if (entry.getValue().getCategories() != null) {
                 for (String cat : entry.getValue().getCategories()){
-                    if (cat.equals(category))
-                        books.add(entry.getValue());
+                    if (cat.equals(category)) {
+                        Book book = entry.getValue();
+                        book.removeLinks();
+                        Link categoryLink = linkTo(methodOn(ApiController.class)
+                                .findByCategory(book.getCategories()[0])).withSelfRel();
+                        Link isbnLink = linkTo(methodOn(ApiController.class)
+                                .findByIsbn(book.getIsbn(), null)).withRel("ISBN URL");
+                        book.add(categoryLink);
+                        book.add(isbnLink);
+                        books.add(book);
+                    }
                 }
             }
         }

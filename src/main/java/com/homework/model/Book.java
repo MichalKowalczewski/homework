@@ -1,13 +1,14 @@
 package com.homework.model;
 
 import lombok.Data;
+import org.springframework.hateoas.ResourceSupport;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public @Data
-class Book {
+class Book extends ResourceSupport {
     private String isbn;
     private String title;
     private String subtitle;
