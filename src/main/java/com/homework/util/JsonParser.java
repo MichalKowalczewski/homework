@@ -1,5 +1,6 @@
 package com.homework.util;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.homework.model.Book;
 import com.homework.model.IndustryIdentifier;
 import com.homework.model.Item;
@@ -29,13 +30,13 @@ public class JsonParser {
     public Map<String, Book> getBooksMap() {
         return booksMap;
     }
-
+    ObjectMapper mapper = new ObjectMapper();
 
 
 
     @PostConstruct
     public void parseJson() throws IOException, ParseException {
-        ObjectMapper mapper = new ObjectMapper();
+
         Response response = null;
         switch (source.toLowerCase()){
             case "file": {
@@ -64,6 +65,27 @@ public class JsonParser {
                     continue;
                 }
             }
+        }
+    }
+
+    public void processNewJson(Object obj){
+        try{
+            mapper.configure(SerializationFeature.INDENT_OUTPUT, true); //żeby było ładnie
+            mapper.writeValue(new File(obj.toString()+"file.json"), obj);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void modifyJson(Object obj, String path){
+        try{
+            mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+            mapper.writeValue(new File(path+"file.json"), obj);
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

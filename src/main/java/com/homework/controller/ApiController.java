@@ -2,6 +2,7 @@ package com.homework.controller;
 
 import com.homework.model.Book;
 import com.homework.model.BookOrder;
+import com.homework.model.Customer;
 import com.homework.model.Rating;
 import com.homework.util.JsonParser;
 import com.homework.exceptions.ResourceNotFoundException;
@@ -10,9 +11,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,17 +22,18 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@Api(value = "BooksControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/books")
+@Api(tags = "Books Controller", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ApiController {
 
     @Autowired
     JsonParser jsonParser;
 
-    @GetMapping("/api/book/{isbn}")
+    @GetMapping("book/{isbn}")
     @ApiOperation("Gets the books by ISBN")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Book.class)})
     public Book findByIsbn(
-            @PathVariable("isbn") String isbn, HttpServletResponse response) throws IOException, ParseException {
+            @ApiParam(value = "ISBN_13 to be provided to fetch the book") @PathVariable("isbn") String isbn, HttpServletResponse response) throws IOException, ParseException {
         if (jsonParser.getBooksMap().containsKey(isbn)) {
             Book book = jsonParser.getBooksMap().get(isbn);
             book.removeLinks();
@@ -49,18 +49,18 @@ public class ApiController {
             return book ;
         }
         else {
-            response.sendRedirect("/api/book/nonexisting");
+            response.sendRedirect("book/nonexisting");
             return null;
         }
 
     }
 
-    @GetMapping("/api/book/nonexisting")
+    @GetMapping("book/nonexisting")
     public void nonExisting(){
         throw new ResourceNotFoundException("No results found");
     }
     
-    @GetMapping("/api/category/{category}/books")
+    @GetMapping("category/{category}/books")
     public List<Book> findByCategory(@PathVariable("category") @ApiParam(value = "Category of the books you want to be provided") String category) throws IOException, ParseException {
         List<Book> books = new LinkedList<>();
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()) {
@@ -83,7 +83,7 @@ public class ApiController {
         return books;
     }
 
-    @GetMapping(value = "/api/rating")
+    @GetMapping(value = "rating")
     public TreeSet<Rating> getAuthorsByRating(){
         TreeSet<Rating> ratings = new TreeSet<>(new RatingComparator());
         for (Map.Entry<String, Book> entry: jsonParser.getBooksMap().entrySet()){
@@ -97,11 +97,11 @@ public class ApiController {
         return ratings;
     }
 
-    @GetMapping("/api/book/order/{isbn}")
+    @GetMapping("book/order/{isbn}")
     @ApiOperation("Order book by ISBN")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = BookOrder.class)})
     public BookOrder orderByIsbn(
-            @PathVariable("isbn") String isbn, HttpServletResponse response) throws IOException, ParseException {
+            @PathVariable(value = "isbn")  String isbn, HttpServletResponse response) throws IOException, ParseException {
 
         if (jsonParser.getBooksMap().containsKey(isbn)) {
             Book book = jsonParser.getBooksMap().get(isbn);
@@ -116,7 +116,7 @@ public class ApiController {
             order.getBookOrdered().add(isbnLink);
             return order;
         } else {
-            response.sendRedirect("/api/book/nonexisting");
+            response.sendRedirect("book/nonexisting");
             return null;
         }
 

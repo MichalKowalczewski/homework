@@ -33,12 +33,22 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public Docket customerApi(){
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("customer")
+                .apiInfo(apiInfo())
+                .select()
+                .paths(PathSelectors.regex("/customer.*"))
+                .build();
+    }
+
+    @Bean
     public Docket booksApi(){
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("books")
                 .apiInfo(apiInfo())
-                .pathMapping("/")
                 .select()
-                .paths(PathSelectors.regex("/api.*"))
+                .paths(PathSelectors.regex("/books.*"))
                 .build();
     }
 

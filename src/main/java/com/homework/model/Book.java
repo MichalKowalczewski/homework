@@ -1,5 +1,7 @@
 package com.homework.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.hateoas.ResourceSupport;
 
@@ -7,12 +9,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@ApiModel(value="Book Model", description = "This is data model of a book")
 public @Data
 class Book extends ResourceSupport {
     private String isbn;
     private String title;
     private String subtitle;
     private String publisher;
+    @ApiModelProperty(value = "date when book has been published in epoch format")
     private Long publishedDate;
     private String description;
     private Integer pageCount;
@@ -20,6 +24,8 @@ class Book extends ResourceSupport {
     private String language;
     private String previewLink;
     private Double averageRating;
+
+    @ApiModelProperty(value = "list of the book authors")
     private String[] authors;
     private String[] categories;
 
