@@ -2,7 +2,6 @@ package com.homework.controller;
 
 import com.homework.model.Book;
 import com.homework.model.BookOrder;
-import com.homework.model.Customer;
 import com.homework.model.Rating;
 import com.homework.util.JsonParser;
 import com.homework.exceptions.ResourceNotFoundException;

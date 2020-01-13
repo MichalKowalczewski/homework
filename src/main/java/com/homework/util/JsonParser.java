@@ -26,7 +26,7 @@ public class JsonParser {
     @Value("${parser.url}")
     private String url;
 
-    private Map<String,Book> booksMap = new HashMap<>();
+    private Map<String, Book> booksMap = new HashMap<>();
     public Map<String, Book> getBooksMap() {
         return booksMap;
     }
